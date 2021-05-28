@@ -653,7 +653,7 @@ client.on('message', (channel, tags, message, self) => {
 ///////////////////////////////////
 
 // connects timer module
-const {timer} = require('./timer.js');
+const { timer } = require('./timer.js');
 
 // runs timer
 timer(client);
