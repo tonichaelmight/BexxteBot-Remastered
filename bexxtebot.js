@@ -96,7 +96,9 @@ client.on('message', (channel, tags, message, self) => {
     config.forbiddenWords.forEach(word => {
       if (message.includes(word)) {
         client.timeout(channel, tags.username, 20, 'used forbidden word');
+        client.color(channel, 'red');
         client.say(channel, `Naughty naughty, @${tags.username}! We don't use that word here.`);
+        client.color(channel, 'hotpink');
         return;
       }
     });
@@ -541,10 +543,7 @@ client.on('message', (channel, tags, message, self) => {
   if (command === 'bexxtebot') {
     cooldowns.createCooldown(command);
 
-    client.say(
-      channel,
-      'Hey there everyone, my name is BexxteBot! I am a custom chat bot designed specifically for this channel; if you see me do or say anything crazy, make sure to let @bexxters or @tonichaelmight know so that it can be fixed ASAP. Happy Chatting! bexxteLove'
-    );
+    client.say(channel, 'Hey there everyone, my name is BexxteBot! I am a custom chat bot designed specifically for this channel; if you see me do or say anything crazy, make sure to let @bexxters or @tonichaelmight know so that it can be fixed ASAP. Happy Chatting! bexxteLove');
     return;
   }
 
