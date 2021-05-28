@@ -1,4 +1,4 @@
-const env_vars = require('./env_var.js');
+const ev = require('./ev.js');
 let randomIndex;
 
 // these are things that we want on a timer
@@ -63,7 +63,7 @@ exports.timer = async function (client) {
 
     // gets the result of promise and chats it
     const msg = await saySomethingRandom();
-    client.say(env_vars.CHANNEL_NAME, msg);
+    client.say(ev.CHANNEL_NAME, msg);
 
   }
 

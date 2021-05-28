@@ -1,7 +1,9 @@
 // REQUIRES
-const ev = require('./ev.js');
-const tmi = require('tmi.js');
-const cooldowns = require('./cooldowns.js');
+const ev = require('./ev.js'); // environment variables
+const tmi = require('tmi.js'); // twitch tingz
+const cooldowns = require('./cooldowns.js'); // connects to cooldowns db
+const {exec} = require('child_process'); // function that runs shell scripts
+const {configure} = require('./setup.js'); // connects to setup file
 
 
 // ESTABLISH CLIENT CONNECTION
@@ -21,3 +23,6 @@ const client = new tmi.Client({
 });
 
 client.connect();
+
+// configure chat color; option to greet chat
+configure();
