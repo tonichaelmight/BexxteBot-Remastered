@@ -1,10 +1,10 @@
 // REQUIRES
 const ev = require('./ev.js'); // environment variables
 const tmi = require('tmi.js'); // twitch tingz
-const cooldowns = require('./cooldowns.js'); // connects to cooldowns db
+const {createCooldown} = require('./cooldowns.js'); // connects to cooldowns db
 const {exec} = require('child_process'); // function that runs shell scripts
 const {configure} = require('./setup.js'); // connects to setup file
-const {bexxteConfig} = require('./config.js'); // links to configuration file
+const config = require('./config.js'); // links to configuration file
 
 
 // ESTABLISH CLIENT CONNECTION
@@ -90,5 +90,43 @@ client.on('message', (channel, tags, message, self) => {
 
   // MODERATION
 
+  // mods are not subject to this moderation
+  if (!isMod) {
 
-});
+    config.forbiddenWords.forEach(word => {
+      if (message.includes(word)) {
+        client.timeout(channel, tags.username, 20, 'used forbidden word');
+        client.say(channel, `Naughty naughty, @${tags.username}! We don't use that word here.`);
+        return;
+      }
+    });
+
+  }
+  //END MODERATION
+
+
+  // LURK
+  if (
+    message === '!lurk' || 
+    message.startsWith('!lurk ') || 
+    message.endsWith(' !lurk') || 
+    message.includes(' !lurk ')) {
+
+      client.say(channel, `${tags.username} is now lurkin in the chat shadows. Stay awhile and enjoy! bexxteCozy`);
+      return;
+	}
+
+
+  // ignore messages from bexxtebot; ignore any other messages that don't start with '!'
+  if (self || !message.startsWith('!')) return;
+
+  // remove the '!' and establish command var
+  let command = message.slice(1);
+
+  // the command is only the word prefixed with '!'; remove the rest if applicable
+  if (command.indexOf(' ') !== -1) {
+    command = command.slice(0, command.indexOf(' '));
+  }
+
+
+}); // END MESSAGE LISTENER

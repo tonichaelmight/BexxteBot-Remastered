@@ -3,52 +3,7 @@ exports.PLAYLIST = '';
 
 exports.CONTENT_WARNING = '';
 
-exports.ACTIVE_COMMANDS = [
-  // GENERAL
-  'bttv',
-  'commands',
-  'discord',
-  'follow',
-  'lurk',
-  'music',
-  'prime',
-  'raid',
-  'so',
-  'sub',
-  'uptime',
-  'whomst',
 
-  // SPECIAL
-  'ban',
-  'blm',
-  'cw',
-  'stap',
-  'mute',
-  'raiding',
-  'welcome',
-
-  // EXPERIMENTAL
-  'bexxtebot',
-  'hello',
-  'socials',
-  'test',
-  'validate',
-
-  // PEOPLE
-  'marta',
-  'michael',
-  'tim',
-  'yackie',
-
-  // PLANNED
-  //'hangman',
-  //'fortune',
-  //'8ball',
-  //'drag',
-  //'clip',
-  //'blackjack',
-  //'pride',
-];
 
 
 
