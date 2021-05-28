@@ -3,19 +3,6 @@ exports.PLAYLIST = '';
 
 exports.CONTENT_WARNING = '';
 
-exports.FORBIDDEN_TERMS = [
-  'reylo',
-  'bigfollows',
-  'ethandies',
-  'ethan dies',
-  ' mia ',
-  ' rose ',
-  ' mother miranda ',
-  //'die',
-  //'dies',
-  ' eveline '
-];
-
 exports.ACTIVE_COMMANDS = [
   // GENERAL
   'bttv',
