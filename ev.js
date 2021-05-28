@@ -1,12 +1,3 @@
-// editable variables
-exports.PLAYLIST = '';
-
-exports.CONTENT_WARNING = '';
-
-
-
-
-
 // channel and bot variables
 exports.CHANNEL_NAME = 'bexxters';
 exports.BOT_NAME = 'bexxtebot';

@@ -1,4 +1,8 @@
-bexxteConfig = {
+const bexxteConfig = {
+
+  playlist: '',
+
+  contentWarning: '',
 
   moderation: {
     'ethan dies': true,
@@ -64,8 +68,9 @@ bexxteConfig = {
 // END BEXXTECONFIG
 
 
+
 // Forbidden Words
-exports.forbiddenWords = [];
+const forbiddenWords = [];
 
 const modKeys = Object.keys(bexxteConfig.moderation);
 
@@ -75,13 +80,15 @@ modKeys.forEach(key => {
   }
 });
 
-console.log(forbiddenWords);
+//console.log(forbiddenWords);
 
 
+// UNNECESSARY??
+/*
 // Active commands
-exports.activeCommands = [];
+const activeCommands = [];
 
-const cmdKeys = Object.keys(bexxtebot.allCommands);
+const cmdKeys = Object.keys(bexxteConfig.allCommands);
 
 cmdKeys.forEach(key => {
   if (bexxteConfig.allCommands[key]) {
@@ -89,4 +96,19 @@ cmdKeys.forEach(key => {
   }
 });
 
-console.log(activeCommands);
+//console.log(activeCommands);
+*/
+
+
+
+
+
+
+
+
+// EXPORT
+module.exports = {
+  bexxteConfig,
+  forbiddenWords,
+  //activeCommands
+};
