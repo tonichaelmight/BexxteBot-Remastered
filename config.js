@@ -42,7 +42,9 @@ const bexxteConfig = {
 
     // EXPERIMENTAL
     'bexxtebot': true,
+    'hangman': false,
     'hello': true,
+    'guess': false,
     'socials': true,
     'test': true,
     'validate': true,
@@ -53,8 +55,7 @@ const bexxteConfig = {
     'tim': true,
     'yackie': true,
 
-    // PLANNED
-    'hangman': false,
+    // PLANNED    
     'fortune': false,
     '8ball': false,
     'drag': false,

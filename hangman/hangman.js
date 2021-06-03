@@ -35,9 +35,9 @@ const printScores = (client, channel) => {
   client.say(channel, finalMessage);
 
   scoresKeys.forEach(key => {
-    scores[key] = undefined;
+    delete scores[key];
   });
-}
+};
 
 const guessed = {
   A: false,
@@ -157,7 +157,7 @@ exports.guess = (client, channel, user, letter) => {
 
     let index = 0;
 
-    while (fullPhrase.slice(index).search(letter) !== -1) {
+    while (fullPhrase.slice(index).search(letter) !== -1 && index < fullPhrase.length) {
 
       index = fullPhrase.slice(index).search(letter) + index;
 
@@ -192,7 +192,7 @@ exports.guess = (client, channel, user, letter) => {
 
   // NO MATCH
   } else {
-    client.say(channel, `No ${letter}'s, ${user}.'`);
+    client.say(channel, `No ${letter}'s, ${user}.`);
     return;
   }
 
@@ -203,16 +203,31 @@ exports.guessFullPhrase = (client, channel, user, userPhrase) => {
 
   if (userPhrase === fullPhrase) {
 
-    scores[user] += currentPhrase.match('_').length;
+    // create score data for user if none exists
+    if (!scores[user]) {
+      scores[user] = 0;
+    }
 
-    client.say(channel, `Congrats ${user}, you guessed the whole phrase!`);
+    let index = 0;
+
+    while (currentPhrase.slice(index).search('_') !== -1 && currentPhrase.slice(index)) {
+      
+      index = currentPhrase.slice(index).search('_') + index;
+      
+      scores[user]++;
+
+      index++;
+      
+    }
+
+    client.say(channel, `Congrats ${user}, you guessed the whole phrase! ${fullPhrase}`);
 
     printScores(client, channel);
 
     exports.reset();
 
   } else {
-    client.say(`Yikes, ${user}... that wasn't quite right.`);
+    client.say(channel, `Yikes, ${user}... that wasn't quite right.`);
   }
 
   return;

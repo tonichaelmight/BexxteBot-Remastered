@@ -1,7 +1,5 @@
 const phrases = [
-  'ALL OR NOTHING',
-  'ALL\'S WELL THAT ENDS WELL',
-  'BEAUTY AND THE BEAT'
+  'THE NIGHT IS STILL YOUNG'
 ];
 
 const getRandomIndex = () => {

@@ -140,7 +140,7 @@ client.on('message', (channel, tags, message, self) => {
   }
 
   // ignore if command is inactive
-  if (!config.bexxteConfig.allCommands) {
+  if (!config.bexxteConfig.allCommands[command]) {
     return;
   }
 
@@ -565,13 +565,15 @@ client.on('message', (channel, tags, message, self) => {
     // a regular guess REQUIRES 8 characters exactly '!guess ?', where ? is any letter
     if (message.length !== 8) {
       // but we also need to test if they are guessing the whole phrase; a full phrase guess will be more than 8 characters always
-      if (message.length >= 8) {
+      if (message.length > 8 && hangman.isReady()) {
 
-        let phrase = message.slice(8);
+        let phrase = message.slice(7);
 
-        message = message.toUpperCase();
+        // console.log(phrase);
 
-        hangman.guessFullPhrase(phrase);
+        phrase = phrase.toUpperCase();
+
+        hangman.guessFullPhrase(client, ev.CHANNEL_NAME, tags.username, phrase);
 
       }
       return;
