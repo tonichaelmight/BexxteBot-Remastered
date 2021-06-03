@@ -5,14 +5,14 @@ const bexxteConfig = {
   contentWarning: '',
 
   moderation: {
-    'ethan dies': true,
-    'ethandies': true,
+    'ethan dies': false,
+    'ethandies': false,
     'reylo': true,
     'bigfollows': true,
-    ' eveline ': true,
-    ' mia ': true,
-    ' rose ': true,
-    'mother miranda': true,
+    ' eveline ': false,
+    ' mia ': false,
+    ' rose ': false,
+    'mother miranda': false,
   },
 
   allCommands: {

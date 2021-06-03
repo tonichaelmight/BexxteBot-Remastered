@@ -5,6 +5,15 @@ const cooldowns = require('./cooldowns.js'); // connects to cooldowns db
 const { exec } = require('child_process'); // function that runs shell scripts
 const { configure } = require('./setup.js'); // connects to setup file
 const config = require('./config.js'); // links to configuration file
+const hangman = require('./hangman/hangman.js');
+
+const allLetters = new RegExp('[a-zA-Z]');
+const caps = new RegExp('[A-Z]');
+const lowers = new RegExp('[a-z]');
+
+/*
+
+*/
 
 
 // ESTABLISH CLIENT CONNECTION
@@ -26,7 +35,7 @@ const client = new tmi.Client({
 client.connect();
 
 // configure chat color; option to greet chat
-configure();
+configure(client);
 
 
 
@@ -34,7 +43,7 @@ configure();
 client.on('message', (channel, tags, message, self) => {
 
   // PARAMETER DESCRIPTIONS
-  //console.log(channel); // the channel the chat is in; should match env_vars.CHANNEL_NAME
+  //console.log(channel); // the channel the chat is in; should match ev.CHANNEL_NAME
   //console.log(tags); // contains metadata about the message and the user who sent it; bexxtebot tags below as example.
 	/*
   {
@@ -135,6 +144,8 @@ client.on('message', (channel, tags, message, self) => {
     return;
   }
 
+  
+
   // cooldowns don't apply to mods
   if (!isMod) {
     if (cooldowns.checkCooldown(command)) {
@@ -142,6 +153,9 @@ client.on('message', (channel, tags, message, self) => {
       return;
     }
   }
+
+
+
   //
   // BASIC COMMANDS
   //
@@ -226,11 +240,16 @@ client.on('message', (channel, tags, message, self) => {
   // SHOUTOUT
   if (command === 'so' && isMod) {
     // creates variable for shoutout-ee
-    const soee = message.slice(4);
+    let soee = message.slice(4);
 
     // eliminates messages with more than one word after the command
     if (soee.indexOf(' ') !== -1) {
       return;
+    }
+
+    // allow for @ at the beinning
+    if (soee.startsWith('@')) {
+      soee = soee.slice(1);
     }
 
     // a twitch username must be between 4 and 25 characters
@@ -245,16 +264,16 @@ client.on('message', (channel, tags, message, self) => {
     }
 
     // cannot shoutout streamer
-    if (soee === env_vars.CHANNEL_NAME) {
-      client.say(channel, `@${env_vars.CHANNEL_NAME} is pretty cool, but she doesn't need a shoutout on her own channel.`);
+    if (soee === ev.CHANNEL_NAME) {
+      client.say(channel, `@${ev.CHANNEL_NAME} is pretty cool, but she doesn't need a shoutout on her own channel.`);
       return;
     }
 
     // get channel information
     exec(
       `curl -X GET "https://api.twitch.tv/helix/search/channels?query=${soee}" \
-      -H 'Authorization: Bearer ${env_vars.BEXXTEBOT_TOKEN}' \
-      -H 'Client-id: ${env_vars.CLIENT_ID}'`,
+      -H 'Authorization: Bearer ${ev.BEXXTEBOT_TOKEN}' \
+      -H 'Client-id: ${ev.CLIENT_ID}'`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
@@ -339,12 +358,12 @@ client.on('message', (channel, tags, message, self) => {
     cooldowns.createCooldown(command);
 
     //const streamer = 'matthallplays';
-    const streamer = env_vars.CHANNEL_NAME;
+    const streamer = ev.CHANNEL_NAME;
 
     exec(
       `curl -X GET "https://api.twitch.tv/helix/search/channels?query=${streamer}" \
-      -H 'Authorization: Bearer ${env_vars.BEXXTEBOT_TOKEN}' \
-      -H 'Client-id: ${env_vars.CLIENT_ID}'`,
+      -H 'Authorization: Bearer ${ev.BEXXTEBOT_TOKEN}' \
+      -H 'Client-id: ${ev.CLIENT_ID}'`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
@@ -460,7 +479,7 @@ client.on('message', (channel, tags, message, self) => {
     cooldowns.createCooldown(command);
 
     for (let i = 0; i < 3; i++) {
-      client.say(channel, `@${env_vars.CHANNEL_NAME.toUpperCase()} HEY QUEEN 👸👸👸 YOU'RE MUTED`);
+      client.say(channel, `@${ev.CHANNEL_NAME.toUpperCase()} HEY QUEEN 👸👸👸 YOU'RE MUTED`);
     }
 
     return;
@@ -512,6 +531,85 @@ client.on('message', (channel, tags, message, self) => {
   // EXPERIMENTS
   //
 
+  // HANGMAN
+  if (command === 'hangman') {
+
+    // kill switch
+    if (message === "!hangman reset" && isMod) {
+      hangman.reset();
+      return;
+    }
+
+    // this needs to include mods
+    if (cooldowns.checkCooldown(command)) {
+      return;
+    }
+
+    cooldowns.createCooldown(command);
+
+    // if a game is live already, ignore
+    if (hangman.getStatus()) {
+      return;
+    }
+
+    // otherwise start a game
+    hangman.startHangman(client, ev.CHANNEL_NAME);
+    return;
+
+  }
+
+
+  // GUESS (for hangman) 
+  if (command === 'guess') {
+
+    // a regular guess REQUIRES 8 characters exactly '!guess ?', where ? is any letter
+    if (message.length !== 8) {
+      // but we also need to test if they are guessing the whole phrase; a full phrase guess will be more than 8 characters always
+      if (message.length >= 8) {
+
+        let phrase = message.slice(8);
+
+        message = message.toUpperCase();
+
+        hangman.guessFullPhrase(phrase);
+
+      }
+      return;
+    }
+
+    /* nevermind on the cooldown
+    // this needs to include mods
+    if (cooldowns.checkCooldown(command)) {
+      return;
+    }
+    */
+
+    // make sure she ready
+    if (hangman.isReady()) {
+
+      let userGuess = message[7];
+
+      userGuess = userGuess.toUpperCase();
+
+      // at this point, if it isn't a capital letter get rid of it
+      if (userGuess.search(caps) === -1) {
+        return;
+      }
+
+      // don't go further if it's been guessed already
+      if (hangman.alreadyGuessed(userGuess)) {
+        return;
+      }
+
+      // cooldowns.createCooldown(command, 3000);
+
+      hangman.guess(client, ev.CHANNEL_NAME, tags.username, userGuess);
+      return;
+
+    }
+
+  }
+
   // HELLO
   if (command === 'hello') {
     // '!hello ' is 7 characters and a twitch username must be at least 4 characters
@@ -552,8 +650,8 @@ client.on('message', (channel, tags, message, self) => {
     cooldowns.createCooldown(command);
 
     client.say(channel, `Come follow me on these other platforms as well!         
-    Twitter: ${env_vars.TWITTER}      
-    TikTok: ${env_vars.TIK_TOK}`)
+    Twitter: ${ev.TWITTER}      
+    TikTok: ${ev.TIK_TOK}`)
   }
 
   // VALIDATE

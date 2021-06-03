@@ -18,6 +18,8 @@ Ideas:
 !drag (opp of validate)
 !team command that searches for live team members
 
+@ for !so
+
 
 Planned:
 !counters for chat activity - (!bop - horny counter)
