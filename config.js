@@ -35,6 +35,7 @@ const bexxteConfig = {
     'ban': true,
     'blm': true,
     'cw': true,
+    'pride': true,
     'stap': true,
     'mute': true,
     'raiding': true,
@@ -42,9 +43,9 @@ const bexxteConfig = {
 
     // EXPERIMENTAL
     'bexxtebot': true,
-    'hangman': false,
+    'hangman':  true,
     'hello': true,
-    'guess': false,
+    'guess':  true,
     'socials': true,
     'test': true,
     'validate': true,

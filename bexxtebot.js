@@ -141,6 +141,7 @@ client.on('message', (channel, tags, message, self) => {
 
   // ignore if command is inactive
   if (!config.bexxteConfig.allCommands[command]) {
+    console.log('hey');
     return;
   }
 
@@ -482,6 +483,15 @@ client.on('message', (channel, tags, message, self) => {
       client.say(channel, `@${ev.CHANNEL_NAME.toUpperCase()} HEY QUEEN 👸👸👸 YOU'RE MUTED`);
     }
 
+    return;
+  }
+
+  // PRIDE
+  if (command === 'pride') {
+    console.log('hollaaaaaaa');
+    cooldowns.createCooldown(command);
+
+    client.say(channel, 'TransgenderPride PansexualPride LesbianPride GenderFluidPride GayPride BisexualPride AsexualPride PrideHeartL PrideHeartR');
     return;
   }
 

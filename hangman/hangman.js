@@ -18,7 +18,7 @@ const printScores = (client, channel) => {
   });
 
   const scoreSort = (x, y) => {
-    return x[1] - y[1];
+    return y[1] - x[1];
   }
 
   scoresArray.sort(scoreSort);
