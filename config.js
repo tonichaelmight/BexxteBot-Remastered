@@ -62,7 +62,6 @@ const bexxteConfig = {
     'drag': false,
     'clip': false,
     'blackjack': false,
-    'pride': false,
 
   }
 
