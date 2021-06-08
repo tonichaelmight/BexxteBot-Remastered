@@ -2,7 +2,6 @@ BexxteBot tingz
 
 In progress:
 !fortune
-A page specifically for you to edit things, without having to dig around (playlist, turn commands on/off, etc) 
 !commands - command list
 
 
@@ -17,8 +16,6 @@ Ideas:
 !clip
 !drag (opp of validate)
 !team command that searches for live team members
-
-@ for !so
 
 
 Planned:

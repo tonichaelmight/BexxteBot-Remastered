@@ -1,6 +1,6 @@
 const bexxteConfig = {
 
-  playlist: '',
+  playlist: 'https://www.youtube.com/watch?v=jd-33kXMtls',
 
   contentWarning: '',
 
@@ -62,7 +62,7 @@ const bexxteConfig = {
     'drag': false,
     'clip': false,
     'blackjack': false,
-
+    'tarot': false,
   }
 
 };

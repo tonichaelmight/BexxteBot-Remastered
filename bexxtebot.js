@@ -11,9 +11,24 @@ const allLetters = new RegExp('[a-zA-Z]');
 const caps = new RegExp('[A-Z]');
 const lowers = new RegExp('[a-z]');
 
-/*
-
-*/
+const prideEmotes = [
+  'AsexualPride', 
+  'BisexualPride', 
+  'GayPride', 
+  'GenderFluidPride', 
+  'LesbianPride', 
+  'PansexualPride', 
+  'TransgenderPride',
+  'IntersexPride',
+  'NonbinaryPride',
+  'bexxteGpride',
+  'bexxteLpride',
+  'bexxteNBpride',
+  'bexxteApride',
+  'bexxteTpride',
+  'bexxtePpride',
+  'bexxteIpride',
+]
 
 
 // ESTABLISH CLIENT CONNECTION
@@ -486,9 +501,17 @@ client.on('message', (channel, tags, message, self) => {
 
   // PRIDE
   if (command === 'pride') {
-    cooldowns.createCooldown(command);
+    cooldowns.createCooldown(command, 2000);
 
-    client.say(channel, 'AsexualPride BisexualPride GayPride GenderFluidPride LesbianPride PansexualPride TransgenderPride');
+    let emoteString = '';
+    let randNum;
+
+    for (let i = 0; i < 10; i++) {
+      randNum = Math.floor(Math.random() * prideEmotes.length);
+      emoteString += prideEmotes[randNum] + ' ';
+    }
+
+    client.say(channel, emoteString);
     return;
   }
 
