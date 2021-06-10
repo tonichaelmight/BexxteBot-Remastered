@@ -1,6 +1,6 @@
 const bexxteConfig = {
 
-  playlist: 'https://www.youtube.com/watch?v=jd-33kXMtls',
+  playlist: 'https://www.youtube.com/watch?v=nlEPCDxXf78',
 
   contentWarning: '',
 

@@ -59,24 +59,9 @@ client.on('message', (channel, tags, message, self) => {
 
   // PARAMETER DESCRIPTIONS
   //console.log(channel); // the channel the chat is in; should match ev.CHANNEL_NAME
-  //console.log(tags); // contains metadata about the message and the user who sent it; bexxtebot tags below as example.
+  console.log(tags); // contains metadata about the message and the user who sent it; bexxtebot tags below as example.
 	/*
-  {
-    'badge-info': { subscriber: '1' },
-    badges: { moderator: '1', subscriber: '0' },
-    color: '#FF69B4',
-    'display-name': 'BexxteBot',
-    'emote-sets': '0,301288873',
-    mod: true,
-    subscriber: true,
-    'user-type': 'mod',
-    'badge-info-raw': 'subscriber/1',
-    'badges-raw': 'moderator/1,subscriber/0',
-    username: 'bexxtebot',
-    emotes: { '302574576': [ '43-51' ] },
-    'emotes-raw': '302574576:43-51',
-    'message-type': 'chat'
-  }
+  Check tags.txt for examples
   */
   //console.log(message); // contains the actual message content as a string
   //console.log(self); // true if the bot sent the message, false otherwise
