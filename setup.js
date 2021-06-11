@@ -15,5 +15,5 @@ exports.configure = async function (client) {
   // client.color(ev.CHANNEL_NAME, c);
 
   // let's everyone know a bad bitch just showed up
-  // client.say(ev.CHANNEL_NAME, 'k bitches the only forbidden words are reylo and bigfollows');
+  // client.say(ev.CHANNEL_NAME, 'hey bestie');
 }

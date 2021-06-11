@@ -59,7 +59,7 @@ client.on('message', (channel, tags, message, self) => {
 
   // PARAMETER DESCRIPTIONS
   //console.log(channel); // the channel the chat is in; should match ev.CHANNEL_NAME
-  console.log(tags); // contains metadata about the message and the user who sent it; bexxtebot tags below as example.
+  //console.log(tags); // contains metadata about the message and the user who sent it; bexxtebot tags below as example.
 	/*
   Check tags.txt for examples
   */
@@ -91,7 +91,7 @@ client.on('message', (channel, tags, message, self) => {
 
 
   // checks mod status
-  const isMod = tags.mod;
+  const isMod = (tags.mod || tags.username === ev.CHANNEL_NAME);
 
   // lowercase everything for easy matching
   message = message.toLowerCase();
