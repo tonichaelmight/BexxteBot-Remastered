@@ -1,6 +1,6 @@
 const bexxteConfig = {
 
-  playlist: 'https://www.youtube.com/watch?v=nlEPCDxXf78',
+  playlist: 'https://www.youtube.com/watch?v=vBYC31o3dVI',
 
   contentWarning: '',
 
@@ -43,9 +43,10 @@ const bexxteConfig = {
 
     // EXPERIMENTAL
     'bexxtebot': true,
-    'hangman':  true,
+    'hangman': true,
     'hello': true,
-    'guess':  true,
+    'guess': true,
+    'quote': true,
     'socials': true,
     'test': true,
     'validate': true,
@@ -63,7 +64,15 @@ const bexxteConfig = {
     'clip': false,
     'blackjack': false,
     'tarot': false,
-  }
+  },
+
+  quotes: [
+    "Enjoy your suffering byeeee! <3",
+    "Nothing is stopping me but common sense.",
+    "Well yeah, I'm the protagonist.",
+    "The reason majima doesn't have a backbone is because we blew out that back.",
+    "I did not mean to help but I guess I will be a good person."
+  ]
 
 };
 // END BEXXTECONFIG
@@ -81,29 +90,11 @@ modKeys.forEach(key => {
   }
 });
 
-//console.log(forbiddenWords);
-
-
-// UNNECESSARY??
-/*
-// Active commands
-const activeCommands = [];
-
-const cmdKeys = Object.keys(bexxteConfig.allCommands);
-
-cmdKeys.forEach(key => {
-  if (bexxteConfig.allCommands[key]) {
-    activeCommands.push(key);
-  }
-});
-
-//console.log(activeCommands);
-*/
-
-
-
-
-
+// Get quote
+const getQuote = () => {
+  const index = Math.floor(Math.random() * bexxteConfig.quotes.length);
+  return bexxteConfig.quotes[index];
+}
 
 
 
@@ -111,5 +102,5 @@ cmdKeys.forEach(key => {
 module.exports = {
   bexxteConfig,
   forbiddenWords,
-  //activeCommands
+  getQuote
 };

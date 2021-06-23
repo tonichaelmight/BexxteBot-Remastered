@@ -662,6 +662,13 @@ client.on('message', (channel, tags, message, self) => {
     return;
   }
 
+  // QUOTE
+  if (command === 'quote') {
+    cooldowns.createCooldown(command);
+
+    client.say(channel, config.getQuote());
+  }
+
   // SOCIALS
   if (command === 'socials') {
     cooldowns.createCooldown(command);
