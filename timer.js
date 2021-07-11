@@ -29,7 +29,9 @@ const phrases = [
       KEKW 
       OhMyPoggies 
       peepoRiot
-      HoldIt`
+      HoldIt`,
+  
+  'uwu have you given youw daiwy points fow da Famiwy Fwiendwy stweam chawwenge?'
 
 ];
 
