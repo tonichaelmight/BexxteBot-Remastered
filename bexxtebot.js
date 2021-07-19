@@ -284,12 +284,18 @@ client.on('message', (channel, tags, message, self) => {
         channelData = JSON.parse(channelData);
 
         // isolates the channel we need; ideally it is the first channel
-        for (const channel of channelData.data) {
-          if (channel.broadcaster_login === soee) {
-            channelData = channel;
-            break;
+        try {
+          for (const channel of channelData.data) {
+            if (channel.broadcaster_login === soee) {
+              channelData = channel;
+              break;
+            }
           }
+        } catch (e) {
+          console.log(e);
+          return;
         }
+        
 
         // console.log(channelData);
 
