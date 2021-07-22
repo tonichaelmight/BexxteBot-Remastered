@@ -64,18 +64,3 @@ exports.createCooldown = async (cmd, ms = 10000) => { // default cooldown is 10 
 
 
 
-/*
-// figuring out how it works
-const testFunction = async () => {
-  cooldowns.set('michael', 'saunders').then(() => {});
-  cooldowns.set('bekka', 'moses').then(() => {});
-
-  const allKeys = await cooldowns.list().then(keys => {return keys});
-  console.log(allKeys); // ['bekka', 'michael']
-
-  const michael = await cooldowns.get('michael').then(value => {return value});
-  console.log(michael); // saunders
-}
-
-// testFunction();
-*/

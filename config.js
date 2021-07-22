@@ -5,14 +5,8 @@ const bexxteConfig = {
   contentWarning: '',
 
   moderation: {
-    'ethan dies': false,
-    'ethandies': false,
     'reylo': true,
     'bigfollows': true,
-    ' eveline ': false,
-    ' mia ': false,
-    ' rose ': false,
-    'mother miranda': false,
   },
 
   allCommands: {
@@ -36,6 +30,7 @@ const bexxteConfig = {
     'blm': true,
     'cw': true,
     'pride': true,
+    'pitbull': true,
     'stap': true,
     'mute': true,
     'raiding': true,
@@ -112,3 +107,14 @@ module.exports = {
   forbiddenWords,
   getQuote
 };
+
+// future - command objects
+/*******************
+  class Command {
+    modOnly
+    cooldown
+    content
+    execute
+    active
+  }
+*/
