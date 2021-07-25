@@ -7,18 +7,19 @@ const { configure } = require('./setup.js'); // connects to setup file
 const config = require('./config.js'); // links to configuration file
 const hangman = require('./hangman/hangman.js');
 const fs = require('fs');
+const https = require('https');
 
 const allLetters = new RegExp('[a-zA-Z]');
 const caps = new RegExp('[A-Z]');
 const lowers = new RegExp('[a-z]');
 
 const prideEmotes = [
-  'AsexualPride', 
-  'BisexualPride', 
-  'GayPride', 
-  'GenderFluidPride', 
-  'LesbianPride', 
-  'PansexualPride', 
+  'AsexualPride',
+  'BisexualPride',
+  'GayPride',
+  'GenderFluidPride',
+  'LesbianPride',
+  'PansexualPride',
   'TransgenderPride',
   'IntersexPride',
   'NonbinaryPride',
@@ -149,7 +150,7 @@ client.on('message', (channel, tags, message, self) => {
       return;
     }
 
-    
+
 
     // cooldowns don't apply to mods
     if (!isMod) {
@@ -273,82 +274,112 @@ client.on('message', (channel, tags, message, self) => {
         return;
       }
 
-      // get channel information
-      exec(
-        `curl -X GET "https://api.twitch.tv/helix/search/channels?query=${soee}" \
-        -H 'Authorization: Bearer ${ev.BEXXTEBOT_TOKEN}' \
-        -H 'Client-id: ${ev.CLIENT_ID}'`,
-        (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-          }
-          // output is entire search data
-          let channelData = `${stdout}`;
-          // parses to JSON
-          channelData = JSON.parse(channelData);
+      // get channel info - JS HTTP version
+      let fullReqData = '';
+      let channelData;
 
-          // isolates the channel we need; ideally it is the first channel
-          for (const channel of channelData.data) {
-            if (channel.broadcaster_login === soee) {
-              channelData = channel;
-              break;
-            }
-          }
-          
-
-          // console.log(channelData);
-
-          /* sample channel data
-          {
-            broadcaster_language: '',
-            broadcaster_login: 'bexxtebot',
-            display_name: 'BexxteBot',
-            game_id: '0',
-            game_name: '',
-            id: '688448029',
-            is_live: false,
-            tag_ids: [],
-            thumbnail_url: 'https://static-cdn.jtvnw.net/user-default-pictures-uv/de130ab0-def7-11e9-b668-784f43822e80-profile_image-300x300.png',
-            title: '',
-            started_at: ''
-          }
-          */
-
-          // if there is no exact match, no shoutout
-          if (!channelData.broadcaster_login) {
-            return;
-          }
-
-          // if there is no game data, do a simple shoutout
-          if (!channelData.game_name) {
-            client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! bexxteLove`);
-            return;
-          }
-
-          // determine if streamer is live
-          if (channelData.is_live) {
-            if (channelData.game_name === 'Just Chatting') {
-              client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently "${channelData.game_name}" bexxteLove`);
-              return;
-            } else {
-              client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently playing "${channelData.game_name}" bexxteLove`);
-              return;
-            }
-            // or offline
-          } else {
-            if (channelData.game_name === 'Just Chatting') {
-              client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen "${channelData.game_name}" bexxteLove`);
-              return;
-            } else {
-              client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen playing "${channelData.game_name}" bexxteLove`);
-              return;
-            }
-          }
+      const channelReqOptions = {
+        hostname: 'api.twitch.tv',
+        method: 'GET',
+        path: `/helix/search/channels?query=${soee}`,
+        headers: {
+          'Authorization': `Bearer ${ev.BEXXTEBOT_TOKEN}`,
+          'Client-id': ev.CLIENT_ID
         }
-      );
-      return;
+      }
+
+      const channelInfoReq = https.request(channelReqOptions, res => {
+
+        res.on('data', data => {
+          fullReqData += data;
+
+          try {
+
+            fullReqData = JSON.parse(fullReqData);
+
+            for (const channelObj of fullReqData.data) {
+              if (channelObj.broadcaster_login === soee) {
+                channelData = channelObj;
+
+                // console.log(channelData);
+
+                /* sample channel data
+                {
+                  broadcaster_language: '',
+                  broadcaster_login: 'bexxtebot',
+                  display_name: 'BexxteBot',
+                  game_id: '0',
+                  game_name: '',
+                  id: '688448029',
+                  is_live: false,
+                  tag_ids: [],
+                  thumbnail_url: 'https://static-cdn.jtvnw.net/user-default-pictures-uv/de130ab0-def7-11e9-b668-784f43822e80-profile_image-300x300.png',
+                  title: '',
+                  started_at: ''
+                }
+                */
+
+                // if there is no exact match, no shoutout
+                if (!channelData.broadcaster_login) {
+                  return;
+                }
+
+                // if there is no game data, do a simple shoutout
+                if (!channelData.game_name) {
+                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! bexxteLove`);
+                  return;
+                }
+
+                // determine if streamer is live
+                if (channelData.is_live) {
+                  if (channelData.game_name === 'Just Chatting') {
+                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently "${channelData.game_name}" bexxteLove`);
+                    return;
+                  } else {
+                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently playing "${channelData.game_name}" bexxteLove`);
+                    return;
+                  }
+                  // or offline
+                } else {
+                  if (channelData.game_name === 'Just Chatting') {
+                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen "${channelData.game_name}" bexxteLove`);
+                    return;
+                  } else {
+                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen playing "${channelData.game_name}" bexxteLove`);
+                    return;
+                  }
+                }
+              }
+            }
+
+            return;
+
+          } catch (e) {
+            if (!(e.name === 'SyntaxError' && e.message === 'Unexpected end of JSON input')) {
+              try {
+                const currentDateAndTime = new Date().toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' });
+                const datePlusError = `${currentDateAndTime} :: ${error}\n`;
+                fs.appendFile('error.txt', datePlusError, appendError => {
+                  if (appendError) throw appendError;
+                });
+              } catch (innerError) {
+                console.log('an error occurred while trying to log an error :/');
+                console.log(innerError);
+              }
+            }
+          }
+
+        })
+      })
+
+      channelInfoReq.on('error', error => {
+        console.log(error);
+      })
+
+      channelInfoReq.end();
+
     }
+
 
     // SUB
     if (command === 'sub') {
@@ -788,10 +819,10 @@ client.on('message', (channel, tags, message, self) => {
     }
 
   } // end try
-  
+
   catch (error) {
     try {
-      const currentDateAndTime = new Date().toLocaleString('en-US', {timeZone: 'UTC', timeZoneName: 'short'});
+      const currentDateAndTime = new Date().toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' });
       const datePlusError = `${currentDateAndTime} :: ${error}\n`;
       fs.appendFile('error.txt', datePlusError, appendError => {
         if (appendError) throw appendError;
