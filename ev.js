@@ -12,6 +12,10 @@ exports.BEXXTEBOT_TOKEN = process.env['BEXXTEBOT_TOKEN'];
 exports.BEXXTEBOT_SECRET = process.env['BEXXTEBOT_SECRET'];
 exports.CLIENT_ID = process.env['CLIENT_ID'];
 
+// DISCORD API TOKENS: ALSO DO NOT CHANGE!!!
+exports.DISCORD_TOKEN = process.env['DISCORD_TOKEN'];
+exports.DISCORD_CLIENT_ID = process.env['DISCORD_CLIENT_ID'];
+
 
 /* EMOTES
 bexxteCozy 
@@ -20,3 +24,4 @@ bexxteBop
 bexxteGun 
 bexxteLove
 */
+

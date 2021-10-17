@@ -1,9 +1,8 @@
 const ev = require('./ev.js');
-let randomIndex;
 
 // these are things that we want on a timer
 const phrases = [
-  '​Join the Basement Party and hang out offline here: https://discord.gg/bdMQHsd',
+  '​Join the Basement Party and hang out offline here: https://discord.gg/bexxters',
 
   'Link your amazon prime to twitch and get a free sub every month, ya nerds',
 
@@ -30,23 +29,27 @@ const phrases = [
       OhMyPoggies 
       peepoRiot
       HoldIt`,
-  
-  'uwu have you given youw daiwy points fow da Famiwy Fwiendwy stweam chawwenge?'
 
+  'I\'m thrilled to announce I\'ll be participating in GhostCon! A virtual convention taking place Halloween weekend celebrating spooky streamers and artists! I\'ll be live to celebrate on Sunday, Oct 31 at 8pm! Find out more here: https://ghostcon.net/about.php'
 ];
+
+const loggedIndices = [];
 
 // chooses a random phrase
 function saySomethingRandom() {
 
-  // if randomIndex has not been assigned, it can be any value
-  if (!randomIndex) {
+  let randomIndex;
+
+  while (!randomIndex || loggedIndices.includes(randomIndex)) {
+
     randomIndex = Math.floor(Math.random() * phrases.length);
-  // otherwise, we want to make sure it does not repeat the previous message
-  } else {
-    const prevIndex = randomIndex;
-    while (prevIndex === randomIndex) {
-      randomIndex = Math.floor(Math.random() * phrases.length);
-    }
+
+  }
+
+  loggedIndices.push(randomIndex);
+
+  if (loggedIndices.length > 3) {
+    loggedIndices.shift();
   }
   
   // returns the random phrase within 12 - 35 minutes
@@ -64,8 +67,23 @@ exports.timer = async function (client) {
   while (true) {
 
     // gets the result of promise and chats it
-    const msg = await saySomethingRandom();
-    client.say(ev.CHANNEL_NAME, msg);
+    try {
+      const msg = await saySomethingRandom();
+      client.say(ev.CHANNEL_NAME, msg);
+    } catch (error) {
+      try {
+        const currentDateAndTime = new Date().toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' });
+        const datePlusError = `${currentDateAndTime} :: ${error}\n`;
+        fs.appendFile('error.txt', datePlusError, appendError => {
+          if (appendError) throw appendError;
+        });
+      } catch (innerError) {
+        console.log('an error occurred while trying to log an error :/');
+        console.log(innerError);
+      }
+    }
+    
+    
 
   }
 

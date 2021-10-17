@@ -5,6 +5,7 @@
   "main": "bexxtebot.js",
   "dependencies": {
     "@replit/database": "^2.0.1",
+    "discord.js": "^12.5.3",
     "tmi.js": "^1.8.3"
   },
   "devDependencies": {},

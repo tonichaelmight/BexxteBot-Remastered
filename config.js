@@ -1,6 +1,6 @@
 const bexxteConfig = {
 
-  playlist: 'https://www.youtube.com/watch?v=Bu392CyN76I',
+  playlist: 'https://www.youtube.com/watch?v=FjDT_3A0rKw',
 
   contentWarning: '',
 
@@ -10,6 +10,9 @@ const bexxteConfig = {
   },
 
   allCommands: {
+
+    // TEMPORARY
+    'ghostcon': true,
 
     // GENERAL
     'bttv': true,
@@ -74,7 +77,8 @@ const bexxteConfig = {
     "Choo-choo bitch, I'm right here.",
     "Do you even know the intricacies of war??",
     "I did not sext the recruiter.",
-    "Oh my god, you stupid roly poly oly motherfucker."
+    "Oh my god, you stupid roly poly oly motherfucker.",
+    "I'M A BUNNY GIRL WITH MY ASS OUT AND I AINT GOT SHIT"
   ]
 
 };

@@ -9,6 +9,8 @@ const hangman = require('./hangman/hangman.js');
 const fs = require('fs');
 const https = require('https');
 
+const discordBot = require('./bexxtebot-discord.js');
+
 const allLetters = new RegExp('[a-zA-Z]');
 const caps = new RegExp('[A-Z]');
 const lowers = new RegExp('[a-z]');
@@ -33,7 +35,7 @@ const prideEmotes = [
 ]
 
 
-// ESTABLISH CLIENT CONNECTION
+// ESTABLISH TWITCH CLIENT CONNECTION
 const client = new tmi.Client({
   options: {
     debug: true
@@ -160,6 +162,17 @@ client.on('message', (channel, tags, message, self) => {
     }
 
 
+    //
+    // TEMPORARY COMMANDS
+    //
+
+    if (command === 'ghostcon') {
+      cooldowns.createCooldown(command);
+
+      client.say(channel, 'I\'m thrilled to announce I\'ll be participating in GhostCon! A virtual convention taking place Halloween weekend celebrating spooky streamers and artists! I\'ll be live to celebrate on Sunday, Oct 31 at 8pm! Find out more here: https://ghostcon.net/about.php');
+      return;
+    }
+
 
     //
     // BASIC COMMANDS
@@ -203,7 +216,7 @@ client.on('message', (channel, tags, message, self) => {
     if (command === 'discord') {
       cooldowns.createCooldown(command);
 
-      client.say(channel, '​Join the Basement Party and hang out offline here: https://discord.gg/bdMQHsd');
+      client.say(channel, '​Join the Basement Party and hang out offline here: https://discord.gg/bexxters');
       return;
     }
 
@@ -319,35 +332,38 @@ client.on('message', (channel, tags, message, self) => {
                 }
                 */
 
-                // if there is no exact match, no shoutout
-                if (!channelData.broadcaster_login) {
-                  return;
-                }
+                break;
 
-                // if there is no game data, do a simple shoutout
-                if (!channelData.game_name) {
-                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! bexxteLove`);
-                  return;
-                }
+              }
 
-                // determine if streamer is live
-                if (channelData.is_live) {
-                  if (channelData.game_name === 'Just Chatting') {
-                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently "${channelData.game_name}" bexxteLove`);
-                    return;
-                  } else {
-                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently playing "${channelData.game_name}" bexxteLove`);
-                    return;
-                  }
-                  // or offline
+              // if there is no exact match, no shoutout
+              if (!channelData.broadcaster_login) {
+                return;
+              }
+
+              // if there is no game data, do a simple shoutout
+              if (!channelData.game_name) {
+                client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! bexxteLove`);
+                return;
+              }
+
+              // determine if streamer is live
+              if (channelData.is_live) {
+                if (channelData.game_name === 'Just Chatting') {
+                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently "${channelData.game_name}" bexxteLove`);
+                  return;
                 } else {
-                  if (channelData.game_name === 'Just Chatting') {
-                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen "${channelData.game_name}" bexxteLove`);
-                    return;
-                  } else {
-                    client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen playing "${channelData.game_name}" bexxteLove`);
-                    return;
-                  }
+                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They are currently playing "${channelData.game_name}" bexxteLove`);
+                  return;
+                }
+                // or offline
+              } else {
+                if (channelData.game_name === 'Just Chatting') {
+                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen "${channelData.game_name}" bexxteLove`);
+                  return;
+                } else {
+                  client.say(channel, `Everyone go check out @${channelData.display_name} at twitch.tv/${channelData.broadcaster_login}! They were last seen playing "${channelData.game_name}" bexxteLove`);
+                  return;
                 }
               }
             }
@@ -358,7 +374,7 @@ client.on('message', (channel, tags, message, self) => {
             if (!(e.name === 'SyntaxError' && e.message === 'Unexpected end of JSON input')) {
               try {
                 const currentDateAndTime = new Date().toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' });
-                const datePlusError = `${currentDateAndTime} :: ${error}\n`;
+                const datePlusError = `${currentDateAndTime} :: ${e}\n`;
                 fs.appendFile('error.txt', datePlusError, appendError => {
                   if (appendError) throw appendError;
                 });
@@ -393,57 +409,88 @@ client.on('message', (channel, tags, message, self) => {
     if (command === 'uptime') {
       cooldowns.createCooldown(command);
 
-      //const streamer = 'matthallplays';
-      const streamer = ev.CHANNEL_NAME;
+      const streamer = 'pixeledpaws';
+      //const streamer = ev.CHANNEL_NAME;
 
-      exec(
-        `curl -X GET "https://api.twitch.tv/helix/search/channels?query=${streamer}" \
-        -H 'Authorization: Bearer ${ev.BEXXTEBOT_TOKEN}' \
-        -H 'Client-id: ${ev.CLIENT_ID}'`,
-        (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
+      let fullReqData = '';
+      let channelData;
+
+      const channelReqOptions = {
+        hostname: 'api.twitch.tv',
+        method: 'GET',
+        path: `/helix/search/channels?query=${streamer}`,
+        headers: {
+          'Authorization': `Bearer ${ev.BEXXTEBOT_TOKEN}`,
+          'Client-id': ev.CLIENT_ID
+        }
+      }
+
+      const channelInfoReq = https.request(channelReqOptions, res => {
+
+        res.on('data', data => {
+          fullReqData += data;
+
+          try {
+
+            fullReqData = JSON.parse(fullReqData);
+
+            for (const channelObj of fullReqData.data) {
+              if (channelObj.broadcaster_login === streamer) {
+                channelData = channelObj;
+                break;
+              }
+              
+            }
+
+            if (!channelData.is_live) {
+              client.say(channel, `Sorry, doesn't look like ${streamer} is live right now. Check back again later!`);
+              return;
+            }
+
+            const currentTime = Date.now();
+            // console.log(currentTime);
+
+            const startTime = Date.parse(channelData.started_at);
+            // console.log(startTime);
+
+            let elapsedTime = currentTime - startTime;
+            // console.log(elapsedTime);
+
+            const hours = Math.floor(elapsedTime / (60000 * 60));
+            elapsedTime = elapsedTime % (60000 * 60);
+
+            const minutes = Math.floor(elapsedTime / 60000);
+            elapsedTime = elapsedTime % 60000;
+
+            const seconds = Math.floor(elapsedTime / 1000);
+
+            client.say(channel, `${streamer} has been live for ${hours === 0 ? '' : `${hours} hours, `}${minutes} minutes and ${seconds} seconds.`);
             return;
-          }
-          // output is entire search data
-          let channelData = `${stdout}`;
-          // parses to JSON
-          channelData = JSON.parse(channelData);
-
-          // isolates the channel we need; ideally it is the first channel
-          for (const channel of channelData.data) {
-            if (channel.broadcaster_login === streamer) {
-              channelData = channel;
-              break;
+            
+          } catch(e) {
+            if (!(e.name === 'SyntaxError' && e.message === 'Unexpected end of JSON input')) {
+              try {
+                const currentDateAndTime = new Date().toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short' });
+                const datePlusError = `${currentDateAndTime} :: ${e}\n`;
+                fs.appendFile('error.txt', datePlusError, appendError => {
+                  if (appendError) throw appendError;
+                });
+              } catch (innerError) {
+                console.log('an error occurred while trying to log an error :/');
+                console.log(innerError);
+              }
             }
           }
+        })
 
-          if (!channelData.is_live) {
-            client.say(channel, `Sorry, doesn't look like ${streamer} is live right now. Check back again later!`);
-            return;
-          }
+      })
 
-          const currentTime = Date.now();
-          // console.log(currentTime);
+      channelInfoReq.on('error', error => {
+        console.log(error);
+      })
 
-          const startTime = Date.parse(channelData.started_at);
-          // console.log(startTime);
-
-          let elapsedTime = currentTime - startTime;
-          // console.log(elapsedTime);
-
-          const hours = Math.floor(elapsedTime / (60000 * 60));
-          elapsedTime = elapsedTime % (60000 * 60);
-
-          const minutes = Math.floor(elapsedTime / 60000);
-          elapsedTime = elapsedTime % 60000;
-
-          const seconds = Math.floor(elapsedTime / 1000);
-
-          client.say(channel, `${streamer} has been live for ${hours === 0 ? '' : `${hours} hours, `}${minutes} minutes and ${seconds} seconds.`);
-          return;
-        }
-      );
+      channelInfoReq.end();
+      
     }
 
     // WHOMST
@@ -468,7 +515,12 @@ client.on('message', (channel, tags, message, self) => {
       }
 
       // argument is everything after the command + ' '
-      const username = message.slice(5);
+      let username = message.slice(5);
+
+      // allow for @ at the beinning
+      if (username.startsWith('@')) {
+        username = username.slice(1);
+      }
 
       // eliminate messages with more than one word following the command
       if (username.indexOf(' ') !== -1) {
