@@ -2,7 +2,6 @@
 const ev = require('./ev.js'); // environment variables
 const tmi = require('tmi.js'); // twitch tingz
 const cooldowns = require('./cooldowns.js'); // connects to cooldowns db
-const { exec } = require('child_process'); // function that runs shell scripts
 const { configure } = require('./setup.js'); // connects to setup file
 const config = require('./config.js'); // links to configuration file
 const hangman = require('./hangman/hangman.js');
@@ -476,15 +475,19 @@ client.on('message', (channel, tags, message, self) => {
             }
 
             if (minutes !== 1) {
-              outputString += minutes + ' minutes and ';
+              outputString += minutes + ' minutes';
             } else {
-              outputString += minutes + ' minute and ';
+              outputString += minutes + ' minute';
+            }
+
+            if (hours) {
+              outputString += ','
             }
 
             if (minutes !== 1) {
-              outputString += minutes + ' seconds.';
+              outputString += ' and ' + seconds + ' seconds.';
             } else {
-              outputString += minutes + ' second.';
+              outputString += ' and ' + seconds + ' second.';
             }
 
             client.say(channel, outputString);
