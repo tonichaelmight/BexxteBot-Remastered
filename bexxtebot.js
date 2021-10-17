@@ -464,7 +464,30 @@ client.on('message', (channel, tags, message, self) => {
 
             const seconds = Math.floor(elapsedTime / 1000);
 
-            client.say(channel, `${streamer} has been live for ${hours === 0 ? '' : `${hours} hours, `}${minutes} minutes and ${seconds} seconds.`);
+            let outputString = '';
+
+            outputString += streamer;
+            outputString += ' has been live for ';
+
+            if (hours > 1) {
+              outputString += hours + ' hours, ';
+            } else if (hours === 1) {
+              outputString += hours + ' hour, ';
+            }
+
+            if (minutes !== 1) {
+              outputString += minutes + ' minutes and ';
+            } else {
+              outputString += minutes + ' minute and ';
+            }
+
+            if (minutes !== 1) {
+              outputString += minutes + ' seconds.';
+            } else {
+              outputString += minutes + ' second.';
+            }
+
+            client.say(channel, outputString);
             return;
             
           } catch(e) {
@@ -482,7 +505,6 @@ client.on('message', (channel, tags, message, self) => {
             }
           }
         })
-
       })
 
       channelInfoReq.on('error', error => {
